@@ -34,28 +34,26 @@ int main(void)
     
     setup();
     
-    char buffer[10];
-    unsigned char ret;
+    uint8_t buffer_uart[10];
     uint8_t buffer_i2c[2];
+    uint16_t voltage;
     
     while (1) 
     {
         PORTB ^= (1<<5);
-        //uart_puts("pokus\n");
-        ret = i2c_start(ADC_ADDRESS + I2C_READ);
-        //uart_puts("pokus\n");
-        if ( ret )
+        if (i2c_start(ADC_ADDRESS + I2C_READ))
         {
             i2c_stop();
             uart_puts("error\n");
         }
         else
         {
-            msb_voltage = i2c_readAck();
-            lsb_voltage = i2c_readNak();
-            voltage = ((lsb_voltage>>2) + (msb_voltage>>6));
+            buffer_i2c[0] = i2c_readAck(); // MSB voltage
+            buffer_i2c[1] = i2c_readNak(); // LSB voltage
+            voltage = (buffer_i2c[1] >> 2) + ((uint16_t)(buffer_i2c[0] << 6));
+            
             i2c_stop();
-            sprintf_P(buffer, PSTR("%d\n"),voltage);
+            sprintf_P(buffer_uart, PSTR("%d\n"),voltage);
             uart_puts(buffer);
         }
         _delay_ms(1000);
