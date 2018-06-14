@@ -13,7 +13,7 @@
 #include "uart.h"
 #include "i2c.h"
 
-#define ADC_ADDRESS 0b1001101 
+#define ADC_ADDRESS 0b10010000 
 
 void setup(void)
 {
@@ -37,7 +37,7 @@ int main(void)
     {
         PORTB ^= (1<<5);
         //uart_puts("pokus\n");
-        ret = i2c_start(0x48 + I2C_WRITE);
+        ret = i2c_start(ADC_ADDRESS + I2C_WRITE);
         i2c_stop();
         uart_puts("pokus\n");
         if ( ret )
