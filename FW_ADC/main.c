@@ -54,7 +54,7 @@ int main(void)
             
             i2c_stop();
             sprintf_P(buffer_uart, PSTR("%d\n"),voltage);
-            uart_puts(buffer);
+            uart_puts(buffer_uart);
         }
         _delay_ms(1000);
     }
