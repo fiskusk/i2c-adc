@@ -30,8 +30,6 @@ void setup(void)
 
 int main(void)
 {
-    /* Replace with your application code */
-    
     setup();
     
     uint8_t buffer_uart[10];
@@ -43,7 +41,6 @@ int main(void)
         PORTB ^= (1<<5);
         if (i2c_start(ADC_ADDRESS + I2C_READ))
         {
-            i2c_stop();
             uart_puts("error\n");
         }
         else
@@ -52,10 +49,10 @@ int main(void)
             buffer_i2c[1] = i2c_readNak(); // LSB voltage
             voltage = (buffer_i2c[1] >> 2) + ((uint16_t)(buffer_i2c[0] << 6));
             
-            i2c_stop();
-            sprintf_P(buffer_uart, PSTR("%d\n"),voltage);
-            uart_puts(buffer_uart);
+            sprintf_P((char *)buffer_uart, PSTR("%d\n"),voltage);
+            uart_puts((char *)buffer_uart);
         }
+        i2c_stop();
         _delay_ms(1000);
     }
 }
